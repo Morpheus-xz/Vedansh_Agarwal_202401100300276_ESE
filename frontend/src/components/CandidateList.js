@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../api';
 
 function CandidateList({ refresh }) {
   const [candidates, setCandidates] = useState([]);

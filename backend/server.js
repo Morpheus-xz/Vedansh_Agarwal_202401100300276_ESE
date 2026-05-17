@@ -11,15 +11,9 @@ app.use('/api/candidates', require('./routes/candidates'));
 app.use('/api/match', require('./routes/match'));
 app.use('/api/ai', require('./routes/ai'));
 
-// Serve frontend static files in production
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-app.use((req, res, next) => {
-  if (req.method === 'GET' && !req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-  } else {
-    next();
-  }
+// Root route for API health check
+app.get('/', (req, res) => {
+  res.json({ status: 'API is running', message: 'Backend is up and running.' });
 });
 
 mongoose.connect(process.env.MONGO_URI)
