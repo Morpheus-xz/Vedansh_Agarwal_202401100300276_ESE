@@ -2,12 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+// Load .env from root in dev; on Render env vars are injected directly
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: path.join(__dirname, '../.env') });
+}
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Routes
@@ -19,17 +22,6 @@ app.use('/api/ai', require('./routes/ai'));
 app.get('/', (req, res) => {
   res.json({ status: 'API is running', message: 'Backend is up and running.' });
 });
-
-// Serve frontend if in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-  app.get('*', (req, res) =>
-    res.sendFile(
-      path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
-    )
-  );
-}
 
 // Error Handler Middleware
 app.use((err, req, res, next) => {
